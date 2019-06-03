@@ -49,6 +49,7 @@ class FirstTask /*final*/ : public TaskInterface // todo add back the "final" wh
 
  private:
   TH1F* mHistogram;
+	//TH1F* testHistogram;
 };
 
 } // namespace o2::quality_control_modules::mftmodule

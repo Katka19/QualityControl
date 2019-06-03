@@ -23,12 +23,18 @@
 namespace o2::quality_control_modules::mftmodule
 {
 
-FirstTask::FirstTask() : TaskInterface(), mHistogram(nullptr) { mHistogram = nullptr; }
+FirstTask::FirstTask() : TaskInterface(), mHistogram(nullptr)/*, testHistogram(nullptr) */{ 
+	mHistogram = nullptr; 
+//	testHistogram = nullptr; 
+}
 
 FirstTask::~FirstTask() {
   if (mHistogram) {
     delete mHistogram;
   }
+  //if (testHistogram) {
+  //  delete testHistogram;
+  //}
 }
 
 void FirstTask::initialize(o2::framework::InitContext& ctx)
@@ -40,12 +46,19 @@ void FirstTask::initialize(o2::framework::InitContext& ctx)
   getObjectsManager()->addMetadata(mHistogram->GetName(), "custom", "34");
   getObjectsManager()->addCheck(mHistogram, "checkFromMftModule", "o2::quality_control_modules::mftmodule::MftModuleCheck",
                                 "QcMftModule");
+/*
+	testHistogram = new TH1F("MftModuleTest", "MftModuleTest", 20, 0, 15000);
+	getObjectsManager()->startPublishing(testHistogram);
+	getObjectsManager()->addMetadata(testHistogram->GetName(), "custom", "34");
+	getObjectsManager()->addCheck(testHistogram, "checkFromMftModuleTest", "o2::quality_control_modules::mftmodule::MftModuleCheck", "QcMftModule");
+*/
 }
 
 void FirstTask::startOfActivity(Activity& /*activity*/)
 {
   QcInfoLogger::GetInstance() << "startOfActivity" << AliceO2::InfoLogger::InfoLogger::endm;
   mHistogram->Reset();
+	//testHistogram->Reset();
 }
 
 void FirstTask::startOfCycle()
@@ -76,7 +89,11 @@ void FirstTask::monitorData(o2::framework::ProcessingContext& ctx)
 //    const char* payload = input.payload;
 
     // for the sake of an example, let's fill the histogram with payload sizes
+printf("before example histogram \n");
     mHistogram->Fill(header->payloadSize);
+//printf("after example histogram \n");
+//		testHistogram->Fill(header->payloadSize);
+//printf("after my histogram \n");
   }
 
   // 2. Using get("<binding>")
@@ -116,6 +133,7 @@ void FirstTask::reset()
 
   QcInfoLogger::GetInstance() << "Resetting the histogram" << AliceO2::InfoLogger::InfoLogger::endm;
   mHistogram->Reset();
+//	testHistogram->Reset();
 }
 
 } // namespace o2::quality_control_modules::mftmodule
