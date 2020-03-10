@@ -23,7 +23,7 @@
       }
     },
     "tasks": {
-      "BasicDigitQcTask": {
+      "BasicDigitQcTaskKKG": {
         "active": "true",
         "className": "o2::quality_control_modules::mft::BasicDigitQcTask",
         "moduleName": "QcMFT",
