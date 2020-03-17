@@ -31,6 +31,13 @@
 namespace o2::quality_control_modules::mft
 {
 
+int D0FrontLowerZ0ChipID[8] = {0, 1, 12, 13, 14, 15, 16, 17};
+int D0FrontLowerZ0HistBin[8][2] = {{0,2}, {0,1}, {1,2}, {1,1}, {1,0}, {2,2}, {2,1}, {2,0}};
+int D0FrontLowerZ1ChipID[9] = {18, 19, 20, 21, 22, 23, 24, 25, 26};
+int D0FrontLowerZ1HistBin[9][2] = {{0,2}, {0,1}, {0,0}, {1,2}, {1,1}, {1,0}, {2,2}, {2,1}, {2,0}};
+
+double D0FrontLowerZ0Coordinates[8][2] = {{0.2,2.8}, {0.2,1.8}, {1.2,2.8}, {1.2,1.8}, {1.2,0.8}, {2.2,2.8}, {2.2,1.8}, {2.2,0.8}};
+
 BasicDigitQcTask::~BasicDigitQcTask()
 {
   /*
@@ -145,6 +152,23 @@ void BasicDigitQcTask::monitorData(o2::framework::ProcessingContext& ctx)
     int nEntries = mMFTPixelHitMap[iChipID]->GetEntries();
     mMFTChipHitMap[layer[iChipID] + half[iChipID] * 10]->SetBinContent(binx[iChipID], biny[iChipID], nEntries);
   }
+
+	mTestCanvas->cd(1);
+	MFTHitMap_ChipID489->Draw();
+
+	//	draw 2D histograms with col option
+	mMFTHitsPerChip_D0FrontLowerZ1->Draw("text colz");
+
+	for(auto& histogram : mMFTD0FrontLowerZ0HitMap)
+		histogram->Draw("colz");
+	for(auto& histogram : mMFTD0FrontLowerZ1HitMap)
+		histogram->Draw("colz");
+	
+	mMFTCanHistPerChip_D0FrontLowerZ0->cd();
+	mMFTHitsPerChip_D0FrontLowerZ0->Draw("text colz");
+	//for(auto& text: mMFTTextChipID_D0FrontLowerZ0)
+	//	text->Draw("same");
+
 }
 
 void BasicDigitQcTask::endOfCycle()
