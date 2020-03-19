@@ -153,9 +153,6 @@ void BasicDigitQcTask::monitorData(o2::framework::ProcessingContext& ctx)
     mMFTChipHitMap[layer[iChipID] + half[iChipID] * 10]->SetBinContent(binx[iChipID], biny[iChipID], nEntries);
   }
 
-	mTestCanvas->cd(1);
-	MFTHitMap_ChipID489->Draw();
-
 	//	draw 2D histograms with col option
 	mMFTHitsPerChip_D0FrontLowerZ1->Draw("text colz");
 
@@ -166,8 +163,6 @@ void BasicDigitQcTask::monitorData(o2::framework::ProcessingContext& ctx)
 	
 	mMFTCanHistPerChip_D0FrontLowerZ0->cd();
 	mMFTHitsPerChip_D0FrontLowerZ0->Draw("text colz");
-	//for(auto& text: mMFTTextChipID_D0FrontLowerZ0)
-	//	text->Draw("same");
 
 }
 
