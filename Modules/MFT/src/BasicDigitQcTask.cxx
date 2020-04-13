@@ -31,12 +31,19 @@
 namespace o2::quality_control_modules::mft
 {
 
-int D0FrontLowerZ0ChipID[8] = {0, 1, 12, 13, 14, 15, 16, 17};
-int D0FrontLowerZ0HistBin[8][2] = {{0,2}, {0,1}, {1,2}, {1,1}, {1,0}, {2,2}, {2,1}, {2,0}};
-int D0FrontLowerZ1ChipID[9] = {18, 19, 20, 21, 22, 23, 24, 25, 26};
-int D0FrontLowerZ1HistBin[9][2] = {{0,2}, {0,1}, {0,0}, {1,2}, {1,1}, {1,0}, {2,2}, {2,1}, {2,0}};
-
-double D0FrontLowerZ0Coordinates[8][2] = {{0.2,2.8}, {0.2,1.8}, {1.2,2.8}, {1.2,1.8}, {1.2,0.8}, {2.2,2.8}, {2.2,1.8}, {2.2,0.8}};
+const int gnZones = 4;
+const int gnChips = 9;
+int gDisk0FLayer0Top[gnZones][gnChips] = {
+	{485, 484, 483, 482, 481, 480, -1, 469, 468},//zone0
+	{494, 493, 492, 491, 490, 489, 488, 487, 486},//zone1
+	{503, 502, 501, 500, 499, 498, 497, 496, 495},//zone2
+	{-1, 473, 472, -1, 471, 470, 506, 505, 504}};//zone3};
+int gDisk0FLayer0Bottom[gnZones][gnChips] = {
+	{0, 1, -1, 12, 13, 14, 15, 16, 17},//zone0
+	{18, 19, 20, 21, 22, 23, 24, 25, 26},//zone1
+	{27, 28, 29, 30, 31, 32, 33, 34, 35},//zone2
+	{36, 37, 38, 2, 3, -1, 4, 5, -1}};//zone3};
+int gHistBin[gnChips][2] = {{0,2}, {0,1}, {0,0}, {1,2}, {1,1}, {1,0}, {2,2}, {2,1}, {2,0}};
 
 BasicDigitQcTask::~BasicDigitQcTask()
 {
@@ -153,16 +160,9 @@ void BasicDigitQcTask::monitorData(o2::framework::ProcessingContext& ctx)
     mMFTChipHitMap[layer[iChipID] + half[iChipID] * 10]->SetBinContent(binx[iChipID], biny[iChipID], nEntries);
   }
 
-	//	draw 2D histograms with col option
-	mMFTHitsPerChip_D0FrontLowerZ1->Draw("text colz");
+	//for(auto& histogram : mMFTD0FrontLowerZ0HitMap)
+	//	histogram->Draw("colz");
 
-	for(auto& histogram : mMFTD0FrontLowerZ0HitMap)
-		histogram->Draw("colz");
-	for(auto& histogram : mMFTD0FrontLowerZ1HitMap)
-		histogram->Draw("colz");
-	
-	mMFTCanHistPerChip_D0FrontLowerZ0->cd();
-	mMFTHitsPerChip_D0FrontLowerZ0->Draw("text colz");
 
 }
 
