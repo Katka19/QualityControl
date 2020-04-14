@@ -33,16 +33,26 @@ namespace o2::quality_control_modules::mft
 
 const int gnZones = 4;
 const int gnChips = 9;
-int gDisk0FLayer0Top[gnZones][gnChips] = {
+int gDisk0Layer0Top[gnZones][gnChips] = {
 	{485, 484, 483, 482, 481, 480, -1, 469, 468},//zone0
 	{494, 493, 492, 491, 490, 489, 488, 487, 486},//zone1
 	{503, 502, 501, 500, 499, 498, 497, 496, 495},//zone2
 	{-1, 473, 472, -1, 471, 470, 506, 505, 504}};//zone3};
-int gDisk0FLayer0Bottom[gnZones][gnChips] = {
+int gDisk0Layer0Bottom[gnZones][gnChips] = {
 	{0, 1, -1, 12, 13, 14, 15, 16, 17},//zone0
 	{18, 19, 20, 21, 22, 23, 24, 25, 26},//zone1
 	{27, 28, 29, 30, 31, 32, 33, 34, 35},//zone2
 	{36, 37, 38, 2, 3, -1, 4, 5, -1}};//zone3};
+int gDisk0Layer1Top[gnZones][gnChips] = {
+	{-1, 479, 478, 533, 532, 531, 530, 529, 528},//zone0
+	{527, 526, 525, 524, 523, 522, 521, 520, 519},//zone1
+	{518, 517, 516, 515, 514, 513, 512, 511, 510},//zone2
+	{509, 50, 507, -1, 477, 476, -1, 475, 474}};//zone3
+int gDisk0Layer1Bottom[gnZones][gnChips] = {
+	{60, 61, 62, 63, 64, 65, 10, 11, -1},//zone0
+	{51, 52, 53, 54, 55, 56, 57, 58, 59},//zone1
+	{42, 43, 44, 45, 46, 47, 48, 49, 50},//zone2
+	{6, 7, -1, 8, 9, -1, 39, 40, 41}};//zone3
 int gHistBin[gnChips][2] = {{0,2}, {0,1}, {0,0}, {1,2}, {1,1}, {1,0}, {2,2}, {2,1}, {2,0}};
 
 BasicDigitQcTask::~BasicDigitQcTask()
