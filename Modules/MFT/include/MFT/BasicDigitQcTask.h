@@ -26,6 +26,8 @@
 #include <TH2.h>
 // Quality Control
 #include "QualityControl/TaskInterface.h"
+// O2
+#include <ITSMFTReconstruction/ChipMappingMFT.h>
 
 using namespace o2::quality_control::core;
 

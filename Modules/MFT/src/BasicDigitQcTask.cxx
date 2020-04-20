@@ -28,6 +28,9 @@
 // C++
 #include <fstream>
 
+using namespace o2;
+using namespace o2::itsmft;
+
 namespace o2::quality_control_modules::mft
 {
 
