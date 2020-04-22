@@ -36,22 +36,22 @@ namespace o2::quality_control_modules::mft
 
 const int gnZones = 4;
 const int gnChips = 9;
-int gDisk0Layer0Top[gnZones][gnChips] = {
+int gHalf1Disk0Layer0[gnZones][gnChips] = {
   {485, 484, 483, 482, 481, 480, -1, 469, 468},//zone0
   {494, 493, 492, 491, 490, 489, 488, 487, 486},//zone1
   {503, 502, 501, 500, 499, 498, 497, 496, 495},//zone2
   {-1, 473, 472, -1, 471, 470, 506, 505, 504}};//zone3};
-int gDisk0Layer0Bottom[gnZones][gnChips] = {
+int gHalf0Disk0Layer0[gnZones][gnChips] = {
   {0, 1, -1, 12, 13, 14, 15, 16, 17},//zone0
   {18, 19, 20, 21, 22, 23, 24, 25, 26},//zone1
   {27, 28, 29, 30, 31, 32, 33, 34, 35},//zone2
   {36, 37, 38, 2, 3, -1, 4, 5, -1}};//zone3};
-int gDisk0Layer1Top[gnZones][gnChips] = {
+int gHalf1Disk0Layer1[gnZones][gnChips] = {
   {-1, 479, 478, 533, 532, 531, 530, 529, 528},//zone0
   {527, 526, 525, 524, 523, 522, 521, 520, 519},//zone1
   {518, 517, 516, 515, 514, 513, 512, 511, 510},//zone2
   {509, 50, 507, -1, 477, 476, -1, 475, 474}};//zone3
-int gDisk0Layer1Bottom[gnZones][gnChips] = {
+int gHalf0Disk0Layer1[gnZones][gnChips] = {
   {60, 61, 62, 63, 64, 65, 10, 11, -1},//zone0
   {51, 52, 53, 54, 55, 56, 57, 58, 59},//zone1
   {42, 43, 44, 45, 46, 47, 48, 49, 50},//zone2
@@ -86,74 +86,80 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
   mMFT_chip_index_H = std::make_unique<TH1F>("ChipHitMaps/mMFT_chip_index_H", "mMFT_chip_index_H", 936, -0.5, 935.5);
   getObjectsManager()->startPublishing(mMFT_chip_index_H.get());
   getObjectsManager()->addMetadata(mMFT_chip_index_H->GetName(), "custom", "34");
-  
-  //	LAYER 0
 
+ 
+  //  MFT BOTTOM HALF -> HALF_0
+  for(int iZone = 0; iZone < gnZones; iZone++)
+  {
+    auto hitmaphalf0disk0layer0 = std::make_unique<TH2F>(Form("Half_0/Disk_0/Layer_0/mMFTHitMap_Zone%d", iZone), Form("MFT ChipHitMap: Half 0, Disk 0, Layer 0, Zone %d", iZone), 3, 0, 3, 4, 0, 4);
+    hitmaphalf0disk0layer0->GetXaxis()->SetNdivisions(300);
+    hitmaphalf0disk0layer0->GetYaxis()->SetNdivisions(300);
+    hitmaphalf0disk0layer0->SetStats(0);
+    mMFTHitMap_Half0Disk0Layer0.push_back(std::move(hitmaphalf0disk0layer0));
+    getObjectsManager()->startPublishing(mMFTHitMap_Half0Disk0Layer0[iZone].get());
+
+    auto hitmaphalf0disk0layer1 = std::make_unique<TH2F>(Form("Half_0/Disk_0/Layer_1/mMFTHitMap_Zone%d", iZone), Form("MFTHitMap: Half 0, Disk 0, Layer 1, Zone %d", iZone), 3, 0, 3, 4, 0, 4);
+    hitmaphalf0disk0layer1->GetXaxis()->SetNdivisions(300);
+    hitmaphalf0disk0layer1->GetYaxis()->SetNdivisions(300);
+    hitmaphalf0disk0layer1->SetStats(0);
+    mMFTHitMap_Half0Disk0Layer1.push_back(std::move(hitmaphalf0disk0layer1));
+    getObjectsManager()->startPublishing(mMFTHitMap_Half0Disk0Layer1[iZone].get());
+  }//	end of loop over zones: defining histograms of integrated hits per chip
+
+
+  //  MFT TOP HALF -> HALF_1
+  for(int iZone = 0; iZone < gnZones; iZone++)
+  {
+    auto hitmaphalf1disk0layer0 = std::make_unique<TH2F>(Form("Half_1/Disk_0/Layer_0/mMFTHitMap_Zone%d", iZone), Form("MFTHitMap: Half 1, Disk 0, Layer 0, Zone %d", iZone), 3, 0, 3, 4, 0, 4);
+    hitmaphalf1disk0layer0->GetXaxis()->SetNdivisions(300);
+    hitmaphalf1disk0layer0->GetYaxis()->SetNdivisions(300);
+    hitmaphalf1disk0layer0->SetStats(0);
+    mMFTHitMap_Half1Disk0Layer0.push_back(std::move(hitmaphalf1disk0layer0));
+    getObjectsManager()->startPublishing(mMFTHitMap_Half1Disk0Layer0[iZone].get());
+
+    auto hitmaphalf1disk0layer1 = std::make_unique<TH2F>(Form("Half_1/Disk_0/Layer_1/mMFTHitMap_Zone%d", iZone), Form("MFTHitMap: Half 1, Disk 0, Layer 1, Zone %d", iZone), 3, 0, 3, 4, 0, 4);
+    hitmaphalf1disk0layer1->GetXaxis()->SetNdivisions(300);
+    hitmaphalf1disk0layer1->GetYaxis()->SetNdivisions(300);
+    hitmaphalf1disk0layer1->SetStats(0);
+    mMFTHitMap_Half1Disk0Layer1.push_back(std::move(hitmaphalf1disk0layer1));
+    getObjectsManager()->startPublishing(mMFTHitMap_Half1Disk0Layer1[iZone].get());
+  }//	end of loop over zones: defining histograms of integrated hits per chip
+
+ 
   //	canvases to plot the 4 zones on it
-  mMFT_canvas_HitMap_Disk0Layer0 = std::make_unique<TCanvas>("Disk_0/Layer_0/mMFTHitMap_Disk0_Layer0", "mMFTHitMap_Disk0_Layer0", 700, 700);
-  mMFT_canvas_HitMap_Disk0Layer0->Divide(4,2,0,0);
-  getObjectsManager()->startPublishing(mMFT_canvas_HitMap_Disk0Layer0.get());
+  mMFT_canvas_HitMap_Half0Disk0Layer0 = std::make_unique<TCanvas>("Half_0/Disk_0/Layer_0/mMFTHitMap", "mMFTHitMap_Half0_Disk0_Layer0", 700, 700);
+  mMFT_canvas_HitMap_Half0Disk0Layer0->Divide(4,1,0,0);
+  getObjectsManager()->startPublishing(mMFT_canvas_HitMap_Half0Disk0Layer0.get());
 
-  //	vector of histograms, note: for now only for the first disk 0
-  for(int iZone = 0; iZone < gnZones; iZone++)
-  {
-    auto hitmaptop = std::make_unique<TH2F>(Form("Disk_0/Layer_0/Top/mMFTHitMap_Zone%d", iZone), Form("MFTHitMap: Disk 0, Layer 0, Top, Zone %d", iZone), 3, 0, 3, 4, 0, 4);
-    hitmaptop->GetXaxis()->SetNdivisions(300);
-    hitmaptop->GetYaxis()->SetNdivisions(300);
-    hitmaptop->SetStats(0);
-    mMFTHitMap_Disk0Layer0Top.push_back(std::move(hitmaptop));
-    getObjectsManager()->startPublishing(mMFTHitMap_Disk0Layer0Top[iZone].get());
+  mMFT_canvas_HitMap_Half1Disk0Layer0 = std::make_unique<TCanvas>("Half_1/Disk_0/Layer_0/mMFTHitMap", "mMFTHitMap_Half1_Disk0_Layer0", 700, 700);
+  mMFT_canvas_HitMap_Half1Disk0Layer0->Divide(4,1,0,0);
+  getObjectsManager()->startPublishing(mMFT_canvas_HitMap_Half1Disk0Layer0.get());
 
-    auto hitmapbottom = std::make_unique<TH2F>(Form("Disk_0/Layer_0/Bottom/mMFTHitMap_Zone%d", iZone), Form("MFTHitMap: Disk 0, Layer 0, Bottom, Zone %d", iZone), 3, 0, 3, 4, 0, 4);
-    hitmapbottom->GetXaxis()->SetNdivisions(300);
-    hitmapbottom->GetYaxis()->SetNdivisions(300);
-    hitmapbottom->SetStats(0);
-    mMFTHitMap_Disk0Layer0Bottom.push_back(std::move(hitmapbottom));
-    getObjectsManager()->startPublishing(mMFTHitMap_Disk0Layer0Bottom[iZone].get());
-  }//	end of loop over zones: defining histograms of integrated hits per chip
+  mMFT_canvas_HitMap_Half0Disk0Layer1 = std::make_unique<TCanvas>("Half_0/Disk_0/Layer_1/mMFTHitMap", "mMFTHitMap_Half0_Disk0_Layer1", 700, 700);
+  mMFT_canvas_HitMap_Half0Disk0Layer1->Divide(4,1,0,0);
+  getObjectsManager()->startPublishing(mMFT_canvas_HitMap_Half0Disk0Layer1.get());
 
-  //	LAYER 1
-
-  // canvases to plot the 4 zones on it
-  mMFT_canvas_HitMap_Disk0Layer1 = std::make_unique<TCanvas>("Disk_0/Layer_1/mMFTHitMap_Disk0_Layer1", "mMFTHitMap_Disk0_Layer1", 700, 700);
-  mMFT_canvas_HitMap_Disk0Layer1->Divide(4,2,0,0);
-  getObjectsManager()->startPublishing(mMFT_canvas_HitMap_Disk0Layer1.get());
-
-  //	declare vector of histograms, note: for now only for the first disk 0
-  for(int iZone = 0; iZone < gnZones; iZone++)
-  {
-    auto hitmaptop = std::make_unique<TH2F>(Form("Disk_0/Layer_1/Top/mMFTHitMap_Zone%d", iZone), Form("MFTHitMap: Disk 0, Layer 1, Top, Zone %d", iZone), 3, 0, 3, 4, 0, 4);
-    hitmaptop->GetXaxis()->SetNdivisions(300);
-    hitmaptop->GetYaxis()->SetNdivisions(300);
-    hitmaptop->SetStats(0);
-    mMFTHitMap_Disk0Layer1Top.push_back(std::move(hitmaptop));
-    getObjectsManager()->startPublishing(mMFTHitMap_Disk0Layer1Top[iZone].get());
-
-    auto hitmapbottom = std::make_unique<TH2F>(Form("Disk_0/Layer_1/Bottom/mMFTHitMap_Zone%d", iZone), Form("MFTHitMap: Disk 0, Layer 1, Bottom, Zone %d", iZone), 3, 0, 3, 4, 0, 4);
-    hitmapbottom->GetXaxis()->SetNdivisions(300);
-    hitmapbottom->GetYaxis()->SetNdivisions(300);
-    hitmapbottom->SetStats(0);
-    mMFTHitMap_Disk0Layer1Bottom.push_back(std::move(hitmapbottom));
-    getObjectsManager()->startPublishing(mMFTHitMap_Disk0Layer1Bottom[iZone].get());
-  }//	end of loop over zones: defining histograms of integrated hits per chip
+  mMFT_canvas_HitMap_Half1Disk0Layer1 = std::make_unique<TCanvas>("Half_1/Disk_0/Layer_1/mMFTHitMap", "mMFTHitMap_Half1_Disk0_Layer1", 700, 700);
+  mMFT_canvas_HitMap_Half1Disk0Layer1->Divide(4,1,0,0);
+  getObjectsManager()->startPublishing(mMFT_canvas_HitMap_Half1Disk0Layer1.get());
 
 
   //	------------------------
   //	draw histos on canvas
   for(int iZone = 0; iZone < gnZones; iZone++)
   {
-    mMFT_canvas_HitMap_Disk0Layer0->cd(iZone+1);
-    mMFTHitMap_Disk0Layer0Top[gnZones-1-iZone]->Draw("text colz");
+    mMFT_canvas_HitMap_Half1Disk0Layer0->cd(iZone+1);
+    mMFTHitMap_Half1Disk0Layer0[gnZones-1-iZone]->Draw("text colz");
 
-    mMFT_canvas_HitMap_Disk0Layer0->cd(4+iZone+1);
-    mMFTHitMap_Disk0Layer0Bottom[iZone]->Draw("text colz");
+    mMFT_canvas_HitMap_Half0Disk0Layer0->cd(iZone+1);
+    mMFTHitMap_Half0Disk0Layer0[iZone]->Draw("text colz");
 
     //	note: rear layer has opposite zone numbering
-    mMFT_canvas_HitMap_Disk0Layer1->cd(iZone+1);
-    mMFTHitMap_Disk0Layer1Top[iZone]->Draw("text colz");
+    mMFT_canvas_HitMap_Half1Disk0Layer1->cd(iZone+1);
+    mMFTHitMap_Half1Disk0Layer1[iZone]->Draw("text colz");
 
-    mMFT_canvas_HitMap_Disk0Layer1->cd(4+iZone+1);
-    mMFTHitMap_Disk0Layer1Bottom[gnZones-1-iZone]->Draw("text colz");
+    mMFT_canvas_HitMap_Half0Disk0Layer1->cd(iZone+1);
+    mMFTHitMap_Half0Disk0Layer1[gnZones-1-iZone]->Draw("text colz");
   }
 
   mMFT_chip_std_dev_H = std::make_unique<TH1F>("ChipHitMaps/mMFT_chip_std_dev_H", "mMFT_chip_std_dev_H", 936, -0.5, 935.5);
