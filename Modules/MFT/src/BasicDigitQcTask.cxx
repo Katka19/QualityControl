@@ -87,18 +87,35 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
   getObjectsManager()->startPublishing(mMFT_chip_index_H.get());
   getObjectsManager()->addMetadata(mMFT_chip_index_H->GetName(), "custom", "34");
 
+  //  MFT DISK 0 LAYER 0 CHIP HIT MAPS
+  mMFTHitMap_Disk0Layer0 = std::make_unique<TH2F>("mMFTHitMap_Disk0Layer0", "mMFT ChipHitMap: Disk 0, Layer 0", 12, 0, 12, 7, 0, 7);
+  mMFTHitMap_Disk0Layer0->GetXaxis()->SetNdivisions(-4);
+  mMFTHitMap_Disk0Layer0->GetYaxis()->SetNdivisions(-2);
+  mMFTHitMap_Disk0Layer0->GetXaxis()->SetLabelSize(0);
+  mMFTHitMap_Disk0Layer0->GetYaxis()->SetLabelSize(0);
+  mMFTHitMap_Disk0Layer0->SetStats(0);
+  getObjectsManager()->startPublishing(mMFTHitMap_Disk0Layer0.get());
+ 
+  //  MFT DISK 0 LAYER 1 CHIP HIT MAPS
+  mMFTHitMap_Disk0Layer1 = std::make_unique<TH2F>("mMFTHitMap_Disk0Layer1", "mMFT ChipHitMap: Disk 0, Layer 1", 12, 0, 12, 7, 0, 7);
+  mMFTHitMap_Disk0Layer1->GetXaxis()->SetNdivisions(-4);
+  mMFTHitMap_Disk0Layer1->GetYaxis()->SetNdivisions(-2);
+  mMFTHitMap_Disk0Layer1->GetXaxis()->SetLabelSize(0);
+  mMFTHitMap_Disk0Layer1->GetYaxis()->SetLabelSize(0);
+  mMFTHitMap_Disk0Layer1->SetStats(0);
+  getObjectsManager()->startPublishing(mMFTHitMap_Disk0Layer1.get());
  
   //  MFT BOTTOM HALF -> HALF_0
   for(int iZone = 0; iZone < gnZones; iZone++)
   {
-    auto hitmaphalf0disk0layer0 = std::make_unique<TH2F>(Form("Half_0/Disk_0/Layer_0/mMFTHitMap_Zone%d", iZone), Form("MFT ChipHitMap: Half 0, Disk 0, Layer 0, Zone %d", iZone), 3, 0, 3, 4, 0, 4);
+    auto hitmaphalf0disk0layer0 = std::make_unique<TH2F>(Form("Half_0/Disk_0/Layer_0/mMFTHitMap_Zone%d", iZone), Form("MFT ChipHitMap: Half 0, Disk 0, Layer 0, Zone %d", iZone), 3, 0, 3, 3, 0, 3);
     hitmaphalf0disk0layer0->GetXaxis()->SetNdivisions(300);
     hitmaphalf0disk0layer0->GetYaxis()->SetNdivisions(300);
     hitmaphalf0disk0layer0->SetStats(0);
     mMFTHitMap_Half0Disk0Layer0.push_back(std::move(hitmaphalf0disk0layer0));
     getObjectsManager()->startPublishing(mMFTHitMap_Half0Disk0Layer0[iZone].get());
 
-    auto hitmaphalf0disk0layer1 = std::make_unique<TH2F>(Form("Half_0/Disk_0/Layer_1/mMFTHitMap_Zone%d", iZone), Form("MFTHitMap: Half 0, Disk 0, Layer 1, Zone %d", iZone), 3, 0, 3, 4, 0, 4);
+    auto hitmaphalf0disk0layer1 = std::make_unique<TH2F>(Form("Half_0/Disk_0/Layer_1/mMFTHitMap_Zone%d", iZone), Form("MFTHitMap: Half 0, Disk 0, Layer 1, Zone %d", iZone), 3, 0, 3, 3, 0, 3);
     hitmaphalf0disk0layer1->GetXaxis()->SetNdivisions(300);
     hitmaphalf0disk0layer1->GetYaxis()->SetNdivisions(300);
     hitmaphalf0disk0layer1->SetStats(0);
@@ -110,14 +127,14 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
   //  MFT TOP HALF -> HALF_1
   for(int iZone = 0; iZone < gnZones; iZone++)
   {
-    auto hitmaphalf1disk0layer0 = std::make_unique<TH2F>(Form("Half_1/Disk_0/Layer_0/mMFTHitMap_Zone%d", iZone), Form("MFTHitMap: Half 1, Disk 0, Layer 0, Zone %d", iZone), 3, 0, 3, 4, 0, 4);
+    auto hitmaphalf1disk0layer0 = std::make_unique<TH2F>(Form("Half_1/Disk_0/Layer_0/mMFTHitMap_Zone%d", iZone), Form("MFTHitMap: Half 1, Disk 0, Layer 0, Zone %d", iZone), 3, 0, 3, 3, 0, 3);
     hitmaphalf1disk0layer0->GetXaxis()->SetNdivisions(300);
     hitmaphalf1disk0layer0->GetYaxis()->SetNdivisions(300);
     hitmaphalf1disk0layer0->SetStats(0);
     mMFTHitMap_Half1Disk0Layer0.push_back(std::move(hitmaphalf1disk0layer0));
     getObjectsManager()->startPublishing(mMFTHitMap_Half1Disk0Layer0[iZone].get());
 
-    auto hitmaphalf1disk0layer1 = std::make_unique<TH2F>(Form("Half_1/Disk_0/Layer_1/mMFTHitMap_Zone%d", iZone), Form("MFTHitMap: Half 1, Disk 0, Layer 1, Zone %d", iZone), 3, 0, 3, 4, 0, 4);
+    auto hitmaphalf1disk0layer1 = std::make_unique<TH2F>(Form("Half_1/Disk_0/Layer_1/mMFTHitMap_Zone%d", iZone), Form("MFTHitMap: Half 1, Disk 0, Layer 1, Zone %d", iZone), 3, 0, 3, 3, 0, 3);
     hitmaphalf1disk0layer1->GetXaxis()->SetNdivisions(300);
     hitmaphalf1disk0layer1->GetYaxis()->SetNdivisions(300);
     hitmaphalf1disk0layer1->SetStats(0);
