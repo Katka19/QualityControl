@@ -273,6 +273,7 @@ void BasicDigitQcTask::monitorData(o2::framework::ProcessingContext& ctx)
   //for(auto& histogram : mMFTD0FrontLowerZ0HitMap)
   //	histogram->Draw("colz");
 
+  //std::cout << mMap->getNChips() << std::endl;
 
 }
 

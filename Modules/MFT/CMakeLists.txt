@@ -17,6 +17,7 @@ target_include_directories(
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 target_link_libraries(QcMFT PUBLIC QualityControl O2::DataFormatsITSMFT) 
+target_link_libraries(QcMFT PUBLIC QualityControl O2::ITSMFTReconstruction) 
 
 install(TARGETS QcMFT
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
