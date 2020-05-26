@@ -170,6 +170,7 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
       FolderName, HistogramName,
       gPixelHitMapsMaxBinX/gPixelHitMapsBinWidth, gPixelHitMapsMinBin, gPixelHitMapsMaxBinX,
       gPixelHitMapsMaxBinY/gPixelHitMapsBinWidth, gPixelHitMapsMinBin, gPixelHitMapsMaxBinY);
+    pxlhitmap->SetStats(0);
     mMFTPixelHitMap.push_back(std::move(pxlhitmap));
     getObjectsManager()->startPublishing(mMFTPixelHitMap[iChipID].get());
   }
