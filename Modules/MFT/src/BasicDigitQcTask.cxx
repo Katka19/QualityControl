@@ -315,15 +315,6 @@ void BasicDigitQcTask::readTable()
 void BasicDigitQcTask::getName(TString &FolderName, TString &HistogramName, int iChipID)
 {
 
-/*
-  FolderName = Form("PixelHitMaps/Half_%.0f/Disk_%.0f/Face_%.0f/Zone_%.0f/Ladder_%.0f/mMFTPixelHitMap_ChipID%d", 
-    mapping[iChipID][4], mapping[iChipID][3], mapping[iChipID][2], mapping[iChipID][1], mapping[iChipID][0], iChipID);
-
-  HistogramName = Form("h%.0f-d%.0f-f%.0f-z%.0f-l%.0f-chip%d",
-    mapping[iChipID][4], mapping[iChipID][3], mapping[iChipID][2], mapping[iChipID][1], mapping[iChipID][0], iChipID);
-*/
-
-  //  used when reading from table
   FolderName = Form("PixelHitMaps/Half_%d/Disk_%d/Face_%d/Zone_%d/Ladder_%d/mMFTPixelHitMap_ChipID%d", 
     half[iChipID], disk[iChipID], face[iChipID], zone[iChipID], ladder[iChipID], iChipID);
 
