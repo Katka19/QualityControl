@@ -60,30 +60,55 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
 
   //==============================================
   //  chip hit maps
-  mMFTChipHitMap_h0d0f0 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_0/Face_0/mMFTChipHitMap_h0d0f0", "h0-d0-f0", 12, -10, 10, 4, -12, 0);
-  mMFTChipHitMap_h1d0f0 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_0/Face_0/mMFTChipHitMap_h1d0f0", "h1-d0-f0", 12, -10, 10, 4, 0, 12);
-  mMFTChipHitMap_h0d0f1 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_0/Face_1/mMFTChipHitMap_h0d0f1", "h0-d0-f1", 12, -10, 10, 4, -12, 0);
-  mMFTChipHitMap_h1d0f1 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_0/Face_1/mMFTChipHitMap_h1d0f1", "h1-d0-f1", 12, -10, 10, 4, 0, 12);
+  mMFTChipHitMap_h0d0f0 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_0/Face_0/mMFTChipHitMap_h0d0f0", "h0-d0-f0;x (cm);y (cm)", 12, -10, 10, 4, -12, 0);
+  mMFTChipHitMap_h1d0f0 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_0/Face_0/mMFTChipHitMap_h1d0f0", "h1-d0-f0;x (cm);y (cm)", 12, -10, 10, 4, 0, 12);
+  mMFTChipHitMap_h0d0f1 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_0/Face_1/mMFTChipHitMap_h0d0f1", "h0-d0-f1;x (cm);y (cm)", 12, -10, 10, 4, -12, 0);
+  mMFTChipHitMap_h1d0f1 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_0/Face_1/mMFTChipHitMap_h1d0f1", "h1-d0-f1;x (cm);y (cm)", 12, -10, 10, 4, 0, 12);
 
-  mMFTChipHitMap_h0d1f0 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_1/Face_0/mMFTChipHitMap_h0d1f0", "h0-d1-f0", 12, -10, 10, 4, -12, 0);
-  mMFTChipHitMap_h1d1f0 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_1/Face_0/mMFTChipHitMap_h1d1f0", "h1-d1-f0", 12, -10, 10, 4, 0, 12);
-  mMFTChipHitMap_h0d1f1 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_1/Face_1/mMFTChipHitMap_h0d1f1", "h0-d1-f1", 12, -10, 10, 4, -12, 0);
-  mMFTChipHitMap_h1d1f1 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_1/Face_1/mMFTChipHitMap_h1d1f1", "h1-d1-f1", 12, -10, 10, 4, 0, 12);
+  mMFTChipHitMap_h0d1f0 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_1/Face_0/mMFTChipHitMap_h0d1f0", "h0-d1-f0;x (cm);y (cm)", 12, -10, 10, 4, -12, 0);
+  mMFTChipHitMap_h1d1f0 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_1/Face_0/mMFTChipHitMap_h1d1f0", "h1-d1-f0;x (cm);y (cm)", 12, -10, 10, 4, 0, 12);
+  mMFTChipHitMap_h0d1f1 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_1/Face_1/mMFTChipHitMap_h0d1f1", "h0-d1-f1;x (cm);y (cm)", 12, -10, 10, 4, -12, 0);
+  mMFTChipHitMap_h1d1f1 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_1/Face_1/mMFTChipHitMap_h1d1f1", "h1-d1-f1;x (cm);y (cm)", 12, -10, 10, 4, 0, 12);
 
-  mMFTChipHitMap_h0d2f0 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_2/Face_0/mMFTChipHitMap_h0d2f0", "h0-d2-f0", 13, -11, 10, 4, -12, 0);
-  mMFTChipHitMap_h1d2f0 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_2/Face_0/mMFTChipHitMap_h1d2f0", "h1-d2-f0", 13, -10, 11, 4, 0, 12);
-  mMFTChipHitMap_h0d2f1 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_2/Face_1/mMFTChipHitMap_h0d2f1", "h0-d2-f1", 13, -10, 11, 4, -12, 0);
-  mMFTChipHitMap_h1d2f1 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_2/Face_1/mMFTChipHitMap_h1d2f1", "h1-d2-f1", 13, -11, 10, 4, 0, 12);
+  mMFTChipHitMap_h0d2f0 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_2/Face_0/mMFTChipHitMap_h0d2f0", "h0-d2-f0;x (cm);y (cm)", 13, -11, 10, 4, -12, 0);
+  mMFTChipHitMap_h1d2f0 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_2/Face_0/mMFTChipHitMap_h1d2f0", "h1-d2-f0;x (cm);y (cm)", 13, -10, 11, 4, 0, 12);
+  mMFTChipHitMap_h0d2f1 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_2/Face_1/mMFTChipHitMap_h0d2f1", "h0-d2-f1;x (cm);y (cm)", 13, -10, 11, 4, -12, 0);
+  mMFTChipHitMap_h1d2f1 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_2/Face_1/mMFTChipHitMap_h1d2f1", "h1-d2-f1;x (cm);y (cm)", 13, -11, 10, 4, 0, 12);
 
-  mMFTChipHitMap_h0d3f0 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_3/Face_0/mMFTChipHitMap_h0d3f0", "h0-d3-f0", 16, -13, 14, 5, -15, 0);
-  mMFTChipHitMap_h1d3f0 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_3/Face_0/mMFTChipHitMap_h1d3f0", "h1-d3-f0", 16, -14, 13, 5, 0, 15);
-  mMFTChipHitMap_h0d3f1 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_3/Face_1/mMFTChipHitMap_h0d3f1", "h0-d3-f1", 16, -14, 13, 5, -15, 0);
-  mMFTChipHitMap_h1d3f1 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_3/Face_1/mMFTChipHitMap_h1d3f1", "h1-d3-f1", 16, -13, 14, 5, 0, 15);
+  mMFTChipHitMap_h0d3f0 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_3/Face_0/mMFTChipHitMap_h0d3f0", "h0-d3-f0;x (cm);y (cm)", 16, -13, 14, 5, -15, 0);
+  mMFTChipHitMap_h1d3f0 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_3/Face_0/mMFTChipHitMap_h1d3f0", "h1-d3-f0;x (cm);y (cm)", 16, -14, 13, 5, 0, 15);
+  mMFTChipHitMap_h0d3f1 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_3/Face_1/mMFTChipHitMap_h0d3f1", "h0-d3-f1;x (cm);y (cm)", 16, -14, 13, 5, -15, 0);
+  mMFTChipHitMap_h1d3f1 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_3/Face_1/mMFTChipHitMap_h1d3f1", "h1-d3-f1;x (cm);y (cm)", 16, -13, 14, 5, 0, 15);
 
-  mMFTChipHitMap_h0d4f0 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_4/Face_0/mMFTChipHitMap_h0d4f0", "h0-d4-f0", 17, -14, 14, 5, -15, 0);
-  mMFTChipHitMap_h1d4f0 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_4/Face_0/mMFTChipHitMap_h1d4f0", "h1-d4-f0", 17, -14, 14, 5, 0, 15);
-  mMFTChipHitMap_h0d4f1 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_4/Face_1/mMFTChipHitMap_h0d4f1", "h0-d4-f1", 17, -14, 14, 5, -15, 0);
-  mMFTChipHitMap_h1d4f1 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_4/Face_1/mMFTChipHitMap_h1d4f1", "h1-d4-f1", 17, -14, 14, 5, 0, 15);
+  mMFTChipHitMap_h0d4f0 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_4/Face_0/mMFTChipHitMap_h0d4f0", "h0-d4-f0;x (cm);y (cm)", 17, -14, 14, 5, -15, 0);
+  mMFTChipHitMap_h1d4f0 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_4/Face_0/mMFTChipHitMap_h1d4f0", "h1-d4-f0;x (cm);y (cm)", 17, -14, 14, 5, 0, 15);
+  mMFTChipHitMap_h0d4f1 = std::make_unique<TH2F>("ChipHitMaps/Half_0/Disk_4/Face_1/mMFTChipHitMap_h0d4f1", "h0-d4-f1;x (cm);y (cm)", 17, -14, 14, 5, -15, 0);
+  mMFTChipHitMap_h1d4f1 = std::make_unique<TH2F>("ChipHitMaps/Half_1/Disk_4/Face_1/mMFTChipHitMap_h1d4f1", "h1-d4-f1;x (cm);y (cm)", 17, -14, 14, 5, 0, 15);
+
+  mMFTChipHitMap_h0d0f0->SetStats(0);
+  mMFTChipHitMap_h1d0f0->SetStats(0);
+  mMFTChipHitMap_h0d0f1->SetStats(0);
+  mMFTChipHitMap_h1d0f1->SetStats(0);
+
+  mMFTChipHitMap_h0d1f0->SetStats(0);
+  mMFTChipHitMap_h1d1f0->SetStats(0);
+  mMFTChipHitMap_h0d1f1->SetStats(0);
+  mMFTChipHitMap_h1d1f1->SetStats(0);
+
+  mMFTChipHitMap_h0d2f0->SetStats(0);
+  mMFTChipHitMap_h1d2f0->SetStats(0);
+  mMFTChipHitMap_h0d2f1->SetStats(0);
+  mMFTChipHitMap_h1d2f1->SetStats(0);
+
+  mMFTChipHitMap_h0d3f0->SetStats(0);
+  mMFTChipHitMap_h1d3f0->SetStats(0);
+  mMFTChipHitMap_h0d3f1->SetStats(0);
+  mMFTChipHitMap_h1d3f1->SetStats(0);
+
+  mMFTChipHitMap_h0d4f0->SetStats(0);
+  mMFTChipHitMap_h1d4f0->SetStats(0);
+  mMFTChipHitMap_h0d4f1->SetStats(0);
+  mMFTChipHitMap_h1d4f1->SetStats(0);
 
   getObjectsManager()->startPublishing(mMFTChipHitMap_h0d0f0.get());
   getObjectsManager()->addMetadata(mMFTChipHitMap_h0d0f0->GetName(), "custom", "34");
