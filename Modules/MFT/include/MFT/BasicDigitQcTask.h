@@ -123,6 +123,10 @@ class BasicDigitQcTask final : public TaskInterface
 
   std::vector<std::unique_ptr<TH2F>> mMFTChipHitMap;
   std::vector<std::unique_ptr<TH2F>> mMFTPixelHitMap;
+  
+  //  functions
+  void readTable();
+  void getName(TString &FolderName, TString &HistogramName, int iChipID);
 
   //  functions
   void readTable();
