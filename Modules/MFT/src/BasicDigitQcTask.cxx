@@ -341,11 +341,11 @@ void BasicDigitQcTask::readTable()
 void BasicDigitQcTask::getName(TString &FolderName, TString &HistogramName, int iChipID)
 {
 
-  FolderName = Form("PixelHitMaps/Half_%d/Disk_%d/Face_%d/Zone_%d/Ladder_%d/mMFTPixelHitMap_ChipID%d", 
-    half[iChipID], disk[iChipID], face[iChipID], zone[iChipID], ladder[iChipID], iChipID);
+  FolderName = Form("PixelHitMaps/Half_%d/Disk_%d/Face_%d/Zone_%d/Ladder_%d/mMFTPixelHitMap-s%d-tr%d", 
+    half[iChipID], disk[iChipID], face[iChipID], zone[iChipID], ladder[iChipID], sensor[iChipID], transID[iChipID]);
 
-  HistogramName = Form("h%d-d%d-f%d-z%d-l%d-chip%d",
-    half[iChipID], disk[iChipID], face[iChipID], zone[iChipID], ladder[iChipID], iChipID);
+  HistogramName = Form("h%d-d%d-f%d-z%d-l%d-s%d-tr%d",
+    half[iChipID], disk[iChipID], face[iChipID], zone[iChipID], ladder[iChipID], sensor[iChipID], transID[iChipID]);
 
   // read file
   std::ifstream read_table;
@@ -376,11 +376,13 @@ void BasicDigitQcTask::readTable()
   //  reset arrays
   for (int i = 0; i < nchip; i++)
   {
-    ladder[i] = 0;
-    zone[i] = 0;
-    face[i] = 0;  
-    disk[i] = 0;
     half[i] = 0;
+    disk[i] = 0;
+    face[i] = 0;  
+    zone[i] = 0;
+    ladder[i] = 0;
+    sensor[i] = 0;
+    transID[i] = 0;
     x[i] = 0;
     y[i] = 0;     
     z[i] = 0;
@@ -392,11 +394,13 @@ void BasicDigitQcTask::readTable()
   std::ifstream read_table;
   read_table.open("./table_file_binidx.txt");
   for (int i = 0; i < nchip; ++i) {
-    read_table >> ladder[i]; 
-    read_table >> zone[i]; 
-    read_table >> face[i]; 
-    read_table >> disk[i]; 
     read_table >> half[i]; 
+    read_table >> disk[i]; 
+    read_table >> face[i]; 
+    read_table >> zone[i]; 
+    read_table >> ladder[i]; 
+    read_table >> sensor[i]; 
+    read_table >> transID[i]; 
     read_table >> x[i]; 
     read_table >> y[i]; 
     read_table >> z[i]; 
