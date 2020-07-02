@@ -126,7 +126,8 @@ class BasicDigitQcTask final : public TaskInterface
   
   //  functions
   void readTable();
-  void getName(TString &FolderName, TString &HistogramName, int iChipID);
+  void getChipName(TString &FolderName, TString &HistogramName, int iHitMap);
+  void getPixelName(TString &FolderName, TString &HistogramName, int iChipID);
 
   //  functions
   void readTable();
