@@ -80,7 +80,7 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
 
   //==============================================
   //  pixel hit maps
-  for(int iChipID = 0; iChipID < 30; iChipID++)
+  for(int iChipID = 0; iChipID < 936; iChipID++)
   {
     //  generate folder and histogram name using the mapping table
     TString FolderName = "";
@@ -176,7 +176,7 @@ void BasicDigitQcTask::monitorData(o2::framework::ProcessingContext& ctx)
   mMFT_digit_count->Fill(Form("cycle%d",counting), digits.size());
 
   // counter to check, which chip was hit
-  int chipHitCounter[936] = {0};
+  std::vector<int> chipHitCounter;
 
   // fill the histograms
   for (auto& one_digit : digits) {
@@ -195,14 +195,14 @@ void BasicDigitQcTask::monitorData(o2::framework::ProcessingContext& ctx)
     mMFTChipHitMap[layer[iChipID] + half[iChipID] * 10]->SetBinContent(binx[iChipID], biny[iChipID], nEntries);
   }
 
-  //  loop over the array, if it has hit (=1), get entries and fill chip hit maps
-  for (int iChip=0; iChip<30; iChip++)
+  //  loop over the vector, but first sort it and remove duplicates (some chips may be hit more times)
+  std::sort(chipHitCounter.begin(), chipHitCounter.end());
+  chipHitCounter.erase(std::unique(chipHitCounter.begin(),chipHitCounter.end()), chipHitCounter.end());
+
+  for(auto & iChip : chipHitCounter)
   {
-    if(chipHitCounter[iChip] == 1)
-    {
-      int nEntries = mMFTPixelHitMap[iChip]->GetEntries();
-      mMFTChipHitMap[layer[iChip]+half[iChip]*10]->SetBinContent(binx[iChip], biny[iChip], nEntries);
-    }
+    int nEntries = mMFTPixelHitMap[iChip]->GetEntries();
+    mMFTChipHitMap[layer[iChip]+half[iChip]*10]->SetBinContent(binx[iChip], biny[iChip], nEntries);
   }
 
 }
