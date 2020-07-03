@@ -61,7 +61,7 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
   //==============================================
   //  chip hit maps
   readTable();
-  for(int iHitMap = 0; iHitMap<20; iHitMap++)
+  for(int iHitMap = 0; iHitMap<nhitmaps; iHitMap++)
   {
     //  generate folder and histogram name using the mapping table
     TString FolderName = "";
@@ -80,7 +80,7 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
 
   //==============================================
   //  pixel hit maps
-  for(int iChipID = 0; iChipID < 936; iChipID++)
+  for(int iChipID = 0; iChipID < nchip; iChipID++)
   {
     //  generate folder and histogram name using the mapping table
     TString FolderName = "";
@@ -171,9 +171,6 @@ void BasicDigitQcTask::monitorData(o2::framework::ProcessingContext& ctx)
   const auto digits = ctx.inputs().get<gsl::span<o2::itsmft::Digit>>("randomdigit");
   if (digits.size() < 1)
     return;
-
-  counting += 1;
-  mMFT_digit_count->Fill(Form("cycle%d",counting), digits.size());
 
   // counter to check, which chip was hit
   std::vector<int> chipHitCounter;
@@ -319,7 +316,7 @@ void BasicDigitQcTask::getPixelName(TString &FolderName, TString &HistogramName,
 void BasicDigitQcTask::readTable()
 {
 
-  const int nchip = 936;
+  //const int nchip = 936;
 
   //  reset arrays
   for (int i = 0; i < nchip; i++)
