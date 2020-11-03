@@ -58,6 +58,10 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
   getObjectsManager()->startPublishing(mMFT_chip_index_H.get());
   getObjectsManager()->addMetadata(mMFT_chip_index_H->GetName(), "custom", "34");
 
+  mMFT_chip_std = std::make_unique<TH1F>("mMFT_chip_std", "mMFT_chip_std", 936, -0.5, 935.5);
+  getObjectsManager()->startPublishing(mMFT_chip_std.get());
+  getObjectsManager()->addMetadata(mMFT_chip_std->GetName(), "custom", "34");
+
   //==============================================
   //  chip hit maps
   readTable();
@@ -72,7 +76,7 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
       FolderName, HistogramName, 
       binsChipHitMaps[iHitMap][0], binsChipHitMaps[iHitMap][1], binsChipHitMaps[iHitMap][2],
       binsChipHitMaps[iHitMap][3], binsChipHitMaps[iHitMap][4], binsChipHitMaps[iHitMap][5]);
-    chiphitmap->SetStats(0);
+    //chiphitmap->SetStats(0);
     mMFTChipHitMap.push_back(std::move(chiphitmap));
     getObjectsManager()->startPublishing(mMFTChipHitMap[iHitMap].get());
     getObjectsManager()->addMetadata(mMFTChipHitMap[iHitMap]->GetName(), "custom", "34");
@@ -172,10 +176,7 @@ void BasicDigitQcTask::monitorData(o2::framework::ProcessingContext& ctx)
   if (digits.size() < 1)
     return;
 
-  // counter to check, which chip was hit
-  std::vector<int> chipHitCounter;
-
-  // fill the histograms
+  // loop over digits
   for (auto& one_digit : digits) {
     int chipIndex = one_digit.getChipIndex();
 
@@ -192,14 +193,12 @@ void BasicDigitQcTask::monitorData(o2::framework::ProcessingContext& ctx)
     mMFTChipHitMap[layer[iChipID] + half[iChipID] * 10]->SetBinContent(binx[iChipID], biny[iChipID], nEntries);
   }
 
-  //  loop over the vector, but first sort it and remove duplicates (some chips may be hit more times)
-  std::sort(chipHitCounter.begin(), chipHitCounter.end());
-  chipHitCounter.erase(std::unique(chipHitCounter.begin(),chipHitCounter.end()), chipHitCounter.end());
-
-  for(auto & iChip : chipHitCounter)
+  //  fill the chip hit maps, std per chip
+  for(int iChip = 0; iChip < 936; iChip++)
   {
     int nEntries = mMFTPixelHitMap[iChip]->GetEntries();
     mMFTChipHitMap[layer[iChip]+half[iChip]*10]->SetBinContent(binx[iChip], biny[iChip], nEntries);
+    mMFT_chip_std->SetBinContent(iChip, mMFTPixelHitMap[iChip]->GetStdDev(1));
   }
 
 }
@@ -286,7 +285,7 @@ void BasicDigitQcTask::getChipName(TString &FolderName, TString &HistogramName, 
 void BasicDigitQcTask::getPixelName(TString &FolderName, TString &HistogramName, int iChipID)
 {
 
-  FolderName = Form("PixelHitMaps/Half_%d/Disk_%d/Face_%d/Zone_%d/Ladder_%d/mMFTPixelHitMap-s%d-tr%d", 
+  FolderName = Form("PixelHitMaps/Half_%d/Disk_%d/Face_%d/mMFTPixelHitMap-z%d-l%d-s%d-tr%d", 
     half[iChipID], disk[iChipID], face[iChipID], zone[iChipID], ladder[iChipID], sensor[iChipID], transID[iChipID]);
 
   HistogramName = Form("h%d-d%d-f%d-z%d-l%d-s%d-tr%d",
