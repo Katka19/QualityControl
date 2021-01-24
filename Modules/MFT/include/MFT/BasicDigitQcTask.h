@@ -129,10 +129,6 @@ class BasicDigitQcTask final : public TaskInterface
   void getChipName(TString &FolderName, TString &HistogramName, int iHitMap);
   void getPixelName(TString &FolderName, TString &HistogramName, int iChipID);
 
-  //  functions
-  void readTable();
-  void getChipName(TString& FolderName, TString& HistogramName, int iHitMap);
-  void getPixelName(TString& FolderName, TString& HistogramName, int iChipID);
 };
 
 } // namespace o2::quality_control_modules::mft

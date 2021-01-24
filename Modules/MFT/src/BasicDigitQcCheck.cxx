@@ -40,12 +40,12 @@ Quality BasicDigitQcCheck::check(std::map<std::string, std::shared_ptr<MonitorOb
 
     (void)moName;
   /*  
-    //if (mo->getName() == "mMFT_chip_index"){
+    //if (mo->getName() == "ChipHitMaps/mMFT_chip_index_H"){
       auto* h = dynamic_cast<TH1F*>(mo->getObject());
       result = Quality::Good;
 
       // test it
-      if (h->GetBinContent(46) > 10) {
+      if (h->GetBinContent(401) == 0) {
         result = Quality::Bad;
       }
     //}
@@ -67,7 +67,7 @@ std::string BasicDigitQcCheck::getAcceptedType() { return "TH1"; }
 
 void BasicDigitQcCheck::beautify(std::shared_ptr<MonitorObject> mo, Quality checkResult)
 {
-  //if (mo->getName() == "mMFT_chip_index") {
+  //if (mo->getName() == "iChipHitMaps/mMFT_chip_index_H") {
     //auto* h = dynamic_cast<TH1F*>(mo->getObject());
     auto* h = dynamic_cast<TH2F*>(mo->getObject());
 
