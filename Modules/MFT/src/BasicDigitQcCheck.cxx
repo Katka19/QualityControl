@@ -17,6 +17,9 @@
 #include <fairlogger/Logger.h>
 // ROOT
 #include <TH1.h>
+#include <TH2.h>
+#include <TPaveText.h>
+#include <TList.h>
 // Quality Control
 #include "MFT/BasicDigitQcCheck.h"
 #include "QualityControl/MonitorObject.h"
@@ -36,15 +39,26 @@ Quality BasicDigitQcCheck::check(std::map<std::string, std::shared_ptr<MonitorOb
   for (auto& [moName, mo] : *moMap) {
 
     (void)moName;
-    if (mo->getName() == "ChipHitMaps/mMFT_chip_index_H") {
+  /*  
+    //if (mo->getName() == "mMFT_chip_index"){
       auto* h = dynamic_cast<TH1F*>(mo->getObject());
       result = Quality::Good;
 
       // test it
-      if (h->GetBinContent(401) == 0) {
+      if (h->GetBinContent(46) > 10) {
         result = Quality::Bad;
       }
+    //}
+*/    
+  
+    auto* h = dynamic_cast<TH2F*>(mo->getObject());
+    result = Quality::Medium;
+
+    //test it
+    if(h->GetBinContent(3,2) > 5){
+      result = Quality::Bad;
     }
+  
   }
   return result;
 }
@@ -53,20 +67,31 @@ std::string BasicDigitQcCheck::getAcceptedType() { return "TH1"; }
 
 void BasicDigitQcCheck::beautify(std::shared_ptr<MonitorObject> mo, Quality checkResult)
 {
-  if (mo->getName() == "ChipHitMaps/mMFT_chip_index_H") {
-    auto* h = dynamic_cast<TH1F*>(mo->getObject());
+  //if (mo->getName() == "mMFT_chip_index") {
+    //auto* h = dynamic_cast<TH1F*>(mo->getObject());
+    auto* h = dynamic_cast<TH2F*>(mo->getObject());
 
-    if (checkResult == Quality::Good) {
-      h->SetLineColor(kGreen + 2);
+    TPaveText *message = new TPaveText(0.3, 0.8, 0.75, 0.9, "NDC");
+    h->GetListOfFunctions()->Add(message);
+    message->SetBorderSize(1);
+  
+    if (checkResult == Quality::Good) {      
+      LOG(INFO) << "Quality::Good, setting to green";
+      message->AddText("OK!");
+      message->SetFillColor(kGreen+2);
+      message->SetTextColor(kWhite);
     } else if (checkResult == Quality::Bad) {
       LOG(INFO) << "Quality::Bad, setting to red";
-      h->SetLineColor(kRed + 1);
+      message->AddText("Bad: Call MFT on-call.");
+      message->SetFillColor(kRed+1);
+      message->SetTextColor(kWhite);
     } else if (checkResult == Quality::Medium) {
       LOG(INFO) << "Quality::medium, setting to orange";
-      h->SetLineColor(kOrange);
+      message->AddText("Warning: pay attention to further development of the situation");
+      message->SetFillColor(kOrange-3);
+      message->SetTextColor(kWhite);
     }
-    // h->SetLineColor(kBlack);
-  }
+  //}
 }
 
 } // namespace o2::quality_control_modules::mft

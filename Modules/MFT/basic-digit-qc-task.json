@@ -42,17 +42,17 @@
       }
     },
     "checks": {
-      "BasicDigitQcCheck": {
+      "BasicDigitQcCheckKKG": {
         "active": "true",
         "dataSource": [{
           "type": "Task",
-          "name": "BasicDigitQcTask",
-          "MOs": ["ChipHitMaps/mMFT_chip_index_H"]
+          "name": "BasicDigitQcTaskKKG",
+          "MOs": "all"
         }],
         "className": "o2::quality_control_modules::mft::BasicDigitQcCheck",
         "moduleName": "QcMFT",
         "detectorName": "MFT",
-        "policy": "OnAny"
+        "policy": "OnEachSeparately"
       }
     }    
   },
@@ -65,7 +65,7 @@
       "samplingConditions": [
         {
           "condition": "random",
-          "fraction": "0.2",
+          "fraction": "1.0",
           "seed": "1234"
         }
       ],

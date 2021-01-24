@@ -59,8 +59,8 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
   getObjectsManager()->addMetadata(mMFT_chip_index_H->GetName(), "custom", "34");
 
   mMFT_chip_std = std::make_unique<TH1F>("mMFT_chip_std", "mMFT_chip_std", 936, -0.5, 935.5);
-  getObjectsManager()->startPublishing(mMFT_chip_std.get());
-  getObjectsManager()->addMetadata(mMFT_chip_std->GetName(), "custom", "34");
+  //getObjectsManager()->startPublishing(mMFT_chip_std.get());
+  //getObjectsManager()->addMetadata(mMFT_chip_std->GetName(), "custom", "34");
 
   //==============================================
   //  chip hit maps
