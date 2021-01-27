@@ -62,8 +62,10 @@ class BasicDigitQcTask final : public TaskInterface
   const int nchip = 936;
 
   int FLP;
-  int minChipID;
-  int maxChipID;
+  //int minChipID;
+  //int maxChipID;
+
+  int nMaps[5] = {132, 132, 164, 236, 272};
 
   int half[936] = { 0 };
   int disk[936] = { 0 };
@@ -122,8 +124,10 @@ class BasicDigitQcTask final : public TaskInterface
 
   //  functions
   void readTable();
+  int getVectorIndex(int chipID);
+  int getChipIndex(int vectorID);
   void getChipName(TString& FolderName, TString& HistogramName, int iHitMap);
-  void getPixelName(TString& FolderName, TString& HistogramName, int iChipID);
+  void getPixelName(TString& FolderName, TString& HistogramName, int iVectorID);
 };
 
 } // namespace o2::quality_control_modules::mft

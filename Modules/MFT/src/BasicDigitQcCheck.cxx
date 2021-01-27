@@ -17,6 +17,7 @@
 #include <fairlogger/Logger.h>
 // ROOT
 #include <TH1.h>
+#include <TH2.h>
 // Quality Control
 #include "MFT/BasicDigitQcCheck.h"
 #include "QualityControl/MonitorObject.h"
@@ -38,12 +39,16 @@ Quality BasicDigitQcCheck::check(std::map<std::string, std::shared_ptr<MonitorOb
     (void)moName;
     if (mo->getName() == "ChipHitMaps/mMFT_chip_index_H") {
       auto* h = dynamic_cast<TH1F*>(mo->getObject());
+      //auto* h = dynamic_cast<TH2F*>(mo->getObject());
       result = Quality::Good;
 
       // test it
       if (h->GetBinContent(401) == 0) {
         result = Quality::Bad;
       }
+      //if (h->GetBinContent(3,2) > 5) {
+      //  result = Quality::Bad;
+      //}
     }
   }
   return result;
@@ -55,6 +60,7 @@ void BasicDigitQcCheck::beautify(std::shared_ptr<MonitorObject> mo, Quality chec
 {
   if (mo->getName() == "ChipHitMaps/mMFT_chip_index_H") {
     auto* h = dynamic_cast<TH1F*>(mo->getObject());
+    //auto* h = dynamic_cast<TH2F*>(mo->getObject());
 
     if (checkResult == Quality::Good) {
       h->SetLineColor(kGreen + 2);

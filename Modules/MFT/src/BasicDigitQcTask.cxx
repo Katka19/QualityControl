@@ -46,9 +46,11 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
   if (auto param = mCustomParameters.find("FLP"); param != mCustomParameters.end()) {
     ILOG(Info, Support) << "Custom parameter - myOwnKey: " << param->second << ENDM;
     FLP = stoi(param->second);
-    minChipID = (FLP - 1) * nchip / 4;
-    maxChipID = FLP * nchip / 4;
+    //minChipID = (FLP - 1) * nchip / 4;
+    //maxChipID = FLP * nchip / 4;
   }
+
+  readTable();
 
   //  -------------------
   mMFT_chip_index_H = std::make_unique<TH1F>("ChipHitMaps/mMFT_chip_index_H", "mMFT_chip_index_H", 936, -0.5, 935.5);
@@ -61,7 +63,6 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
 
   //==============================================
   //  chip hit maps
-  readTable();
   for (int iHitMap = 0; iHitMap < nhitmaps; iHitMap++) {
     //  generate folder and histogram name using the mapping table
     TString FolderName = "";
@@ -80,11 +81,11 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
 
   //==============================================
   //  pixel hit maps
-  for (int iChipID = 0; iChipID < nchip; iChipID++) {
+  for (int iVectorID = 0; iVectorID < nMaps[FLP]; iVectorID++) {
     //  generate folder and histogram name using the mapping table
     TString FolderName = "";
     TString HistogramName = "";
-    getPixelName(FolderName, HistogramName, iChipID);
+    getPixelName(FolderName, HistogramName, iVectorID);
 
     //  create pixel hit map
     auto pxlhitmap = std::make_unique<TH2F>(
@@ -93,11 +94,8 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
       gPixelHitMapsMaxBinY / gPixelHitMapsBinWidth, gPixelHitMapsMinBin, gPixelHitMapsMaxBinY);
     pxlhitmap->SetStats(0);
     mMFTPixelHitMap.push_back(std::move(pxlhitmap));
-
-    if ((iChipID >= minChipID) && (iChipID < maxChipID)) {
-      getObjectsManager()->startPublishing(mMFTPixelHitMap[iChipID].get());
-      getObjectsManager()->addMetadata(mMFTPixelHitMap[iChipID]->GetName(), "custom", "34");
-    }
+    getObjectsManager()->startPublishing(mMFTPixelHitMap[iVectorID].get());
+    getObjectsManager()->addMetadata(mMFTPixelHitMap[iVectorID]->GetName(), "custom", "34");
   }
 }
 
@@ -112,8 +110,8 @@ void BasicDigitQcTask::startOfActivity(Activity& /*activity*/)
     mMFTChipHitMap[iHitMap]->Reset();
   }
 
-  for (int iChipID = 0; iChipID < nchip; iChipID++) {
-    mMFTPixelHitMap[iChipID]->Reset();
+  for (int iVectorID = 0; iVectorID < nMaps[FLP]; iVectorID++) {
+    mMFTPixelHitMap[iVectorID]->Reset();
   }
 }
 
@@ -133,17 +131,22 @@ void BasicDigitQcTask::monitorData(o2::framework::ProcessingContext& ctx)
   for (auto& one_digit : digits) {
     int chipIndex = one_digit.getChipIndex();
 
+    //  simulate QC task on specific FLP (i.e. only digits from disk X will arrive); this can be removed once the code is on FLP
+    if(disk[chipIndex] != FLP) continue;
+
+    int vectorIndex = getVectorIndex(chipIndex);
     //  fill pixel hit maps
-    mMFTPixelHitMap[chipIndex]->Fill(one_digit.getColumn(), one_digit.getRow());
+    mMFTPixelHitMap[vectorIndex]->Fill(one_digit.getColumn(), one_digit.getRow());
     // fill number of entries and standard dev for all chips
-    mMFT_chip_index_H->SetBinContent(chipIndex, mMFTPixelHitMap[chipIndex]->GetEntries());
-    mMFT_chip_std_dev_H->SetBinContent(chipIndex, mMFTPixelHitMap[chipIndex]->GetStdDev(1));
+    mMFT_chip_index_H->SetBinContent(chipIndex, mMFTPixelHitMap[vectorIndex]->GetEntries());
+    mMFT_chip_std_dev_H->SetBinContent(chipIndex, mMFTPixelHitMap[vectorIndex]->GetStdDev(1));
   }
 
   //  fill the chip hit maps
-  for (int iChipID = 0; iChipID < nchip; iChipID++) {
-    int nEntries = mMFTPixelHitMap[iChipID]->GetEntries();
-    mMFTChipHitMap[layer[iChipID] + half[iChipID] * 10]->SetBinContent(binx[iChipID], biny[iChipID], nEntries);
+  for (int iVectorID = 0; iVectorID < nMaps[FLP]; iVectorID++) {
+    int nEntries = mMFTPixelHitMap[iVectorID]->GetEntries();
+    int chipID = getChipIndex(iVectorID);
+    mMFTChipHitMap[layer[chipID] + half[chipID] * 10]->SetBinContent(binx[chipID], biny[chipID], nEntries);
   }
 }
 
@@ -169,8 +172,8 @@ void BasicDigitQcTask::reset()
     mMFTChipHitMap[iHitMap]->Reset();
   }
 
-  for (int iChipID = 0; iChipID < nchip; iChipID++) {
-    mMFTPixelHitMap[iChipID]->Reset();
+  for (int iVectorID = 0; iVectorID < nMaps[FLP]; iVectorID++) {
+    mMFTPixelHitMap[iVectorID]->Reset();
   }
 }
 
@@ -183,8 +186,10 @@ void BasicDigitQcTask::getChipName(TString& FolderName, TString& HistogramName, 
                        int(iHitMap / 10), int((iHitMap % 10) / 2), (iHitMap % 10) % 2);
 }
 
-void BasicDigitQcTask::getPixelName(TString& FolderName, TString& HistogramName, int iChipID)
+void BasicDigitQcTask::getPixelName(TString& FolderName, TString& HistogramName, int iVectorID)
 {
+  int iChipID = getChipIndex(iVectorID);
+
   FolderName = Form("PixelHitMaps/Half_%d/Disk_%d/Face_%d/mMFTPixelHitMap-z%d-l%d-s%d-tr%d",
                     half[iChipID], disk[iChipID], face[iChipID], zone[iChipID], ladder[iChipID], sensor[iChipID], transID[iChipID]);
 
@@ -232,6 +237,31 @@ void BasicDigitQcTask::readTable()
     read_table >> biny[i];
   }
   read_table.close();
+}
+
+int BasicDigitQcTask::getVectorIndex(int chipID)
+{
+
+  int vectorID = chipID + half[chipID]*(-nchip/2 + nMaps[disk[chipID]]/2);
+  
+  for(int idisk=0; idisk<disk[chipID]; idisk++)
+    vectorID = vectorID - nMaps[idisk]/2;
+  
+  return vectorID;
+
+}
+
+int BasicDigitQcTask::getChipIndex(int vectorID)
+{
+
+  int half = int(vectorID/(nMaps[FLP]/2));
+  int chipID = vectorID + half*(-nMaps[FLP]/2 + nchip/2);
+
+  for(int idisk=0; idisk<FLP; idisk++)
+    chipID = chipID + nMaps[idisk]/2;
+
+  return chipID;
+  
 }
 
 } // namespace o2::quality_control_modules::mft

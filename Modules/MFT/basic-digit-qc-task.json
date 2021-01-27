@@ -23,7 +23,7 @@
       }
     },
     "tasks": {
-      "BasicDigitQcTask": {
+      "BasicDigitQcTaskKKGFLP1": {
         "active": "true",
         "className": "o2::quality_control_modules::mft::BasicDigitQcTask",
         "moduleName": "QcMFT",
@@ -42,11 +42,11 @@
       }
     },
     "checks": {
-      "BasicDigitQcCheck": {
+      "BasicDigitQcCheckKKGFLP1": {
         "active": "true",
         "dataSource": [{
           "type": "Task",
-          "name": "BasicDigitQcTask",
+          "name": "BasicDigitQcTaskKKGFLP1",
           "MOs": ["ChipHitMaps/mMFT_chip_index_H"]
         }],
         "className": "o2::quality_control_modules::mft::BasicDigitQcCheck",
