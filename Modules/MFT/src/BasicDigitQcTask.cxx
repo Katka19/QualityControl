@@ -15,6 +15,9 @@
 /// \author Katarina Krizkova Gajdosova
 ///
 
+// temporary header file with mapping table
+#include "MFT/BasicDigitQcTaskConversionTable.h"
+
 // ROOT
 #include <TCanvas.h>
 #include <TH1.h>
@@ -50,7 +53,7 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
     //maxChipID = FLP * nchip / 4;
   }
 
-  readTable();
+  //readTable();
 
   //  -------------------
   mMFT_chip_index_H = std::make_unique<TH1F>("ChipHitMaps/mMFT_chip_index_H", "mMFT_chip_index_H", 936, -0.5, 935.5);

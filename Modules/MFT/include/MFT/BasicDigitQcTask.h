@@ -67,6 +67,7 @@ class BasicDigitQcTask final : public TaskInterface
 
   int nMaps[5] = {132, 132, 164, 236, 272};
 
+/*
   int half[936] = { 0 };
   int disk[936] = { 0 };
   int face[936] = { 0 };
@@ -80,6 +81,7 @@ class BasicDigitQcTask final : public TaskInterface
   double z[936] = { 0 };
   double binx[936] = { 0 };
   double biny[936] = { 0 };
+*/
 
   //  bin numbers for chip hit maps
   double binsChipHitMaps[20][6] = {
