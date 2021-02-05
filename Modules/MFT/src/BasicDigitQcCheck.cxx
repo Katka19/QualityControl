@@ -18,6 +18,8 @@
 // ROOT
 #include <TH1.h>
 #include <TH2.h>
+#include <TList.h>
+#include <TPaveText.h>
 // Quality Control
 #include "MFT/BasicDigitQcCheck.h"
 #include "QualityControl/MonitorObject.h"
@@ -62,13 +64,27 @@ void BasicDigitQcCheck::beautify(std::shared_ptr<MonitorObject> mo, Quality chec
     auto* h = dynamic_cast<TH1F*>(mo->getObject());
     //auto* h = dynamic_cast<TH2F*>(mo->getObject());
 
+    TPaveText *message = new TPaveText(0.3, 0.8, 0.75, 0.9, "NDC");
+    h->GetListOfFunctions()->Add(message);
+    message->SetBorderSize(1);
+
     if (checkResult == Quality::Good) {
+      LOG(INFO) << "Quality::Good, setting to green";
+      message->AddText("OK!");
+      message->SetFillColor(kGreen+2);
+      message->SetTextColor(kWhite);
       h->SetLineColor(kGreen + 2);
     } else if (checkResult == Quality::Bad) {
       LOG(INFO) << "Quality::Bad, setting to red";
+      message->AddText("Bad: Call MFT on-call");
+      message->SetFillColor(kRed+1);
+      message->SetTextColor(kWhite);
       h->SetLineColor(kRed + 1);
     } else if (checkResult == Quality::Medium) {
       LOG(INFO) << "Quality::medium, setting to orange";
+      message->AddText("Warning");
+      message->SetFillColor(kOrange-3);
+      message->SetTextColor(kWhite);
       h->SetLineColor(kOrange);
     }
     // h->SetLineColor(kBlack);
