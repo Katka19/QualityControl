@@ -76,7 +76,7 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
       FolderName, HistogramName,
       binsChipHitMaps[iHitMap][0], binsChipHitMaps[iHitMap][1], binsChipHitMaps[iHitMap][2],
       binsChipHitMaps[iHitMap][3], binsChipHitMaps[iHitMap][4], binsChipHitMaps[iHitMap][5]);
-    chiphitmap->SetStats(0);
+    //chiphitmap->SetStats(0);
     mMFTChipHitMap.push_back(std::move(chiphitmap));
     getObjectsManager()->startPublishing(mMFTChipHitMap[iHitMap].get());
     getObjectsManager()->addMetadata(mMFTChipHitMap[iHitMap]->GetName(), "custom", "34");
@@ -84,7 +84,7 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
 
   //==============================================
   //  pixel hit maps
-  for (int iVectorID = 0; iVectorID < nMaps[FLP]; iVectorID++) {
+  for (int iVectorID = 0; iVectorID < (nMaps[FLP] + nMaps[4-FLP]); iVectorID++) {
     //  generate folder and histogram name using the mapping table
     TString FolderName = "";
     TString HistogramName = "";
@@ -113,7 +113,7 @@ void BasicDigitQcTask::startOfActivity(Activity& /*activity*/)
     mMFTChipHitMap[iHitMap]->Reset();
   }
 
-  for (int iVectorID = 0; iVectorID < nMaps[FLP]; iVectorID++) {
+  for (int iVectorID = 0; iVectorID < (nMaps[FLP] + nMaps[4-FLP]); iVectorID++) {
     mMFTPixelHitMap[iVectorID]->Reset();
   }
 }
@@ -135,18 +135,21 @@ void BasicDigitQcTask::monitorData(o2::framework::ProcessingContext& ctx)
     int chipIndex = one_digit.getChipIndex();
 
     //  simulate QC task on specific FLP (i.e. only digits from disk X will arrive); this can be removed once the code is on FLP
-    if(disk[chipIndex] != FLP) continue;
+    //if(disk[chipIndex] != FLP) continue;
+    if((disk[chipIndex] == 1 && half[chipIndex] == 0) || (disk[chipIndex] == 3 && half[chipIndex] == 1))// corresponds to FLP 1 (FLP=(0,1,2,3,4))
+    {
 
-    int vectorIndex = getVectorIndex(chipIndex);
+      int vectorIndex = getVectorIndex(chipIndex);
     //  fill pixel hit maps
-    mMFTPixelHitMap[vectorIndex]->Fill(one_digit.getColumn(), one_digit.getRow());
+      mMFTPixelHitMap[vectorIndex]->Fill(one_digit.getColumn(), one_digit.getRow());
     // fill number of entries and standard dev for all chips
-    mMFT_chip_index_H->SetBinContent(chipIndex, mMFTPixelHitMap[vectorIndex]->GetEntries());
-    mMFT_chip_std_dev_H->SetBinContent(chipIndex, mMFTPixelHitMap[vectorIndex]->GetStdDev(1));
+      mMFT_chip_index_H->SetBinContent(chipIndex, mMFTPixelHitMap[vectorIndex]->GetEntries());
+      mMFT_chip_std_dev_H->SetBinContent(chipIndex, mMFTPixelHitMap[vectorIndex]->GetStdDev(1));
+    }
   }
 
   //  fill the chip hit maps
-  for (int iVectorID = 0; iVectorID < nMaps[FLP]; iVectorID++) {
+  for (int iVectorID = 0; iVectorID < (nMaps[FLP] + nMaps[4-FLP]); iVectorID++) {
     int nEntries = mMFTPixelHitMap[iVectorID]->GetEntries();
     int chipID = getChipIndex(iVectorID);
     mMFTChipHitMap[layer[chipID] + half[chipID] * 10]->SetBinContent(binx[chipID], biny[chipID], nEntries);
@@ -175,7 +178,7 @@ void BasicDigitQcTask::reset()
     mMFTChipHitMap[iHitMap]->Reset();
   }
 
-  for (int iVectorID = 0; iVectorID < nMaps[FLP]; iVectorID++) {
+  for (int iVectorID = 0; iVectorID < (nMaps[FLP] + nMaps[4-FLP]); iVectorID++) {
     mMFTPixelHitMap[iVectorID]->Reset();
   }
 }
@@ -244,11 +247,19 @@ void BasicDigitQcTask::readTable()
 
 int BasicDigitQcTask::getVectorIndex(int chipID)
 {
-
+/*
   int vectorID = chipID + half[chipID]*(-nchip/2 + nMaps[disk[chipID]]/2);
   
   for(int idisk=0; idisk<disk[chipID]; idisk++)
     vectorID = vectorID - nMaps[idisk]/2;
+  
+  return vectorID;
+*/
+
+  int vectorID = chipID + half[chipID]*(-nchip/2 + nMaps[4-disk[chipID]]);
+  
+  for(int idisk=0; idisk < disk[chipID]; idisk++)
+    vectorID = vectorID - nMaps[idisk];
   
   return vectorID;
 
@@ -256,7 +267,7 @@ int BasicDigitQcTask::getVectorIndex(int chipID)
 
 int BasicDigitQcTask::getChipIndex(int vectorID)
 {
-
+/*
   int half = int(vectorID/(nMaps[FLP]/2));
   int chipID = vectorID + half*(-nMaps[FLP]/2 + nchip/2);
 
@@ -264,7 +275,24 @@ int BasicDigitQcTask::getChipIndex(int vectorID)
     chipID = chipID + nMaps[idisk]/2;
 
   return chipID;
-  
+*/
+
+  int half = 0;
+  if(int(vectorID/nMaps[FLP]) < 1)
+    half = 0;
+  else half = 1;
+
+  int chipID = vectorID + half*(-nMaps[FLP] + nchip/2);
+
+  int maxDisk = 0;
+  if(half == 0) maxDisk = FLP;
+  else maxDisk = 4-FLP;
+
+  for(int idisk=0; idisk < maxDisk; idisk++)
+    chipID = chipID + nMaps[idisk];
+
+  return chipID;
+
 }
 
 } // namespace o2::quality_control_modules::mft

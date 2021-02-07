@@ -65,7 +65,8 @@ class BasicDigitQcTask final : public TaskInterface
   //int minChipID;
   //int maxChipID;
 
-  int nMaps[5] = {132, 132, 164, 236, 272};
+  //int nMaps[5] = {132, 132, 164, 236, 272};
+  int nMaps[5] = {66, 66, 82, 118, 136};
 
 /*
   int half[936] = { 0 };
