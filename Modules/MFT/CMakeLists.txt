@@ -3,14 +3,14 @@
 add_library(O2QcMFT)
 
 target_sources(O2QcMFT PRIVATE
-               src/BasicDigitQcCheck.cxx
-               src/BasicDigitQcTask.cxx
-               src/BasicClusterQcCheck.cxx
-               src/BasicClusterQcTask.cxx
-               src/BasicTrackQcCheck.cxx
-               src/BasicTrackQcTask.cxx
-               src/BasicReadoutHeaderQcCheck.cxx
-               src/BasicReadoutHeaderQcTask.cxx)
+               src/QcMFTDigitTask.cxx
+               src/QcMFTDigitCheck.cxx
+               src/QcMFTClusterTask.cxx
+               src/QcMFTClusterCheck.cxx
+               src/QcMFTTrackTask.cxx
+               src/QcMFTTrackCheck.cxx
+               src/QcMFTReadoutTask.cxx
+               src/QcMFTReadoutCheck.cxx)
 
 target_include_directories(
   O2QcMFT
@@ -27,29 +27,29 @@ install(TARGETS O2QcMFT
 
 add_root_dictionary(O2QcMFT
                     HEADERS
-                    include/MFT/BasicDigitQcCheck.h
-                    include/MFT/BasicDigitQcTask.h
-                    include/MFT/BasicClusterQcCheck.h
-                    include/MFT/BasicClusterQcTask.h
-                    include/MFT/BasicTrackQcCheck.h
-                    include/MFT/BasicTrackQcTask.h 
-                    include/MFT/BasicReadoutHeaderQcCheck.h
-                    include/MFT/BasicReadoutHeaderQcTask.h
+                    include/MFT/QcMFTDigitTask.h
+                    include/MFT/QcMFTDigitCheck.h
+                    include/MFT/QcMFTClusterTask.h
+                    include/MFT/QcMFTClusterCheck.h
+                    include/MFT/QcMFTTrackTask.h
+                    include/MFT/QcMFTTrackCheck.h 
+                    include/MFT/QcMFTReadoutTask.h
+                    include/MFT/QcMFTReadoutCheck.h
                     LINKDEF include/MFT/LinkDef.h
                     BASENAME O2QcMFT)
                     
 # ---- Executables ----
 
 set(EXE_SRCS 
-     src/runDigitsRootFileReaderMFT.cxx 
-     src/runDigitsHotPixelRootFileReaderMFT.cxx 
-     src/runClustersRootFileReaderMFT.cxx
-     src/runTracksRootFileReaderMFT.cxx)
+     src/runMFTDigitsRootFileReader.cxx 
+     src/runMFTDigitsHotPixelRootFileReader.cxx 
+     src/runMFTClustersRootFileReader.cxx
+     src/runMFTTracksRootFileReader.cxx)
 set(EXE_NAMES 
-     o2-qc-run-digits-root-file-reader-mft
-     o2-qc-run-digits-hot-pixel-root-file-reader-mft
-     o2-qc-run-clusters-root-file-reader-mft
-     o2-qc-run-tracks-root-file-reader-mft)
+     o2-qc-mft-run-digits-root-file-reader
+     o2-qc-mft-run-digits-hot-pixel-root-file-reader
+     o2-qc-mft-run-clusters-root-file-reader
+     o2-qc-mft-run-tracks-root-file-reader)
 
 list(LENGTH EXE_SRCS count)
 math(EXPR count "${count}-1")
@@ -61,10 +61,10 @@ foreach(i RANGE ${count})
 endforeach()
 
 install(
-  TARGETS o2-qc-run-digits-root-file-reader-mft
-          o2-qc-run-digits-hot-pixel-root-file-reader-mft
-          o2-qc-run-clusters-root-file-reader-mft
-          o2-qc-run-tracks-root-file-reader-mft
+  TARGETS o2-qc-mft-run-digits-root-file-reader
+          o2-qc-mft-run-digits-hot-pixel-root-file-reader
+          o2-qc-mft-run-clusters-root-file-reader
+          o2-qc-mft-run-tracks-root-file-reader
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )   
 
@@ -112,7 +112,7 @@ install(FILES mft-digit-qc-task-FLP-0-TaskLevel-0.json
               mft-digit-qc-task-FLP-4-TaskLevel-2.json
               mft-digit-qc-task-FLP-4-TaskLevel-3.json
               mft-digit-qc-task-FLP-4-TaskLevel-4.json
-              basic-cluster-qc-task.json
-              basic-track-qc-task.json
-              mft-basic-readout-header-qc-task.json
+              qc-mft-cluster.json
+              qc-mft-track.json
+              qc-mft-readout.json
         DESTINATION etc)

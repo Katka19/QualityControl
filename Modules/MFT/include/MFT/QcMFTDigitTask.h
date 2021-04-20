@@ -9,14 +9,14 @@
 // or submit itself to any jurisdiction.
 
 ///
-/// \file   BasicDigitQcTask.h
+/// \file   QcMFTDigitTask.h
 /// \author Tomas Herman
 /// \author Guillermo Contreras
 /// \author Katarina Krizkova Gajdosova
 ///
 
-#ifndef QC_MODULE_MFT_MFTBasicDIGITQCTASK_H
-#define QC_MODULE_MFT_MFTBasicDIGITQCTASK_H
+#ifndef QC_MODULE_MFT_DIGIT_TASK_H
+#define QC_MODULE_MFT_DIGIT_TASK_H
 
 // ROOT
 #include <TCanvas.h>
@@ -35,13 +35,13 @@ namespace o2::quality_control_modules::mft
 /// \author Katarina Krizkova Gajdosova
 /// \author Tomas Herman
 /// \author Guillermo Contreras
-class BasicDigitQcTask final : public TaskInterface
+class QcMFTDigitTask final : public TaskInterface
 {
  public:
   /// \brief Constructor
-  BasicDigitQcTask() = default;
+  QcMFTDigitTask() = default;
   /// Destructor
-  ~BasicDigitQcTask() override;
+  ~QcMFTDigitTask() override;
 
   // Definition of the methods for the template method pattern
   void initialize(o2::framework::InitContext& ctx) override;
@@ -54,32 +54,18 @@ class BasicDigitQcTask final : public TaskInterface
 
  private:
   //  variables
-  const double gPixelHitMapsMaxBinX = 1024;
-  const double gPixelHitMapsMaxBinY = 512;
-  const double gPixelHitMapsMinBin = 0;
-  const double gPixelHitMapsShift = 0.5;
-  const int gPixelHitMapsBinWidth = 1;
+  const double maxBinXPixelHitMap = 1024;
+  const double maxBinYPixelHitMap = 512;
+  const double minBinPixelHitMap = 0;
+  const double shiftPixelHitMap = 0.5;
+  const int binWidthPixelHitMap = 1;
 
-  const int nHitMaps = 20;
-  const int nChip = 936;
+  const int numberOfHitMaps = 20;
+  const int numberOfChips = 936;
 
-  int FLP;
-  int TaskLevel;
-  int nMaps[5] = { 66, 66, 82, 118, 136 };
-
-  // int half[936] = { 0 };
-  // int disk[936] = { 0 };
-  // int face[936] = { 0 };
-  // int zone[936] = { 0 };
-  // int ladder[936] = { 0 };
-  // int sensor[936] = { 0 };
-  // int transID[936] = { 0 };
-  // int layer[936] = { 0 };
-  // double x[936] = { 0 };
-  // double y[936] = { 0 };
-  // double z[936] = { 0 };
-  // double binx[936] = { 0 };
-  // double biny[936] = { 0 };
+  int mCurrentFLP;
+  int mTaskLevel;
+  int mNumberOfMapsPerFLP[5] = { 66, 66, 82, 118, 136 };
 
   //  bin numbers for chip hit maps
   double binsChipHitMaps[20][6] = {
@@ -116,22 +102,22 @@ class BasicDigitQcTask final : public TaskInterface
     { 17, -14, 14, 5, 0, 15 },
   };
 
-  std::unique_ptr<TH1F> mMFT_chip_index_H = nullptr;
-  std::unique_ptr<TH1F> mMFT_chip_std_dev_H = nullptr;
+  std::unique_ptr<TH1F> mChipOccupancy = nullptr;
+  std::unique_ptr<TH1F> mChipOccupancyStdDev = nullptr;
 
-  std::vector<std::unique_ptr<TH2F>> mMFTChipHitMap;
-  std::vector<std::unique_ptr<TH2F>> mMFTPixelHitMap;
+  std::vector<std::unique_ptr<TH2F>> mChipOccupancyMap;
+  std::vector<std::unique_ptr<TH2F>> mPixelOccupancyMap;
 
   //  functions
   // void readTable();
-  int getVectorHitMapIndex(int HitMapID);
-  int getHitMapIndex(int VectorHitMapID);
-  int getVectorIndex(int chipID);
-  int getChipIndex(int vectorID);
-  void getChipName(TString& FolderName, TString& HistogramName, int iHitMapID);
-  void getPixelName(TString& FolderName, TString& HistogramName, int iChipID);
+  int getVectorChipOccupancyMapIndex(int ChipOccupancyMapIndex);
+  int getChipOccupancyMapIndex(int VectorChipOccupancyMapIndex);
+  int getVectorIndex(int chipIndex);
+  int getChipIndex(int vectorIndex);
+  void getNameOfChipOccupancyMap(TString& FolderName, TString& HistogramName, int iChipOccupancyMapIndex);
+  void getNameOfPixelOccupancyMap(TString& FolderName, TString& HistogramName, int iChipIndex);
 };
 
 } // namespace o2::quality_control_modules::mft
 
-#endif // QC_MODULE_MFT_MFTBasicDIGITQCTASK_H
+#endif // QC_MODULE_MFT_DIGIT_TASK_H
