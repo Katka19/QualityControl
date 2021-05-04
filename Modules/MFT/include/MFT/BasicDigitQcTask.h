@@ -67,17 +67,14 @@ class BasicDigitQcTask final : public TaskInterface
   int TaskLevel;
   int nMaps[5] = { 66, 66, 82, 118, 136 };
 
-  // int half[936] = { 0 };
-  // int disk[936] = { 0 };
-  // int face[936] = { 0 };
-  // int zone[936] = { 0 };
+  int half[936] = { 0 };
+  int disk[936] = { 0 };
+  int face[936] = { 0 };
+  int zone[936] = { 0 };
   // int ladder[936] = { 0 };
-  // int sensor[936] = { 0 };
-  // int transID[936] = { 0 };
-  // int layer[936] = { 0 };
-  // double x[936] = { 0 };
-  // double y[936] = { 0 };
-  // double z[936] = { 0 };
+  int sensor[936] = { 0 };
+  int transID[936] = { 0 };
+  int layer[936] = { 0 };
   // double binx[936] = { 0 };
   // double biny[936] = { 0 };
 
@@ -130,6 +127,7 @@ class BasicDigitQcTask final : public TaskInterface
   int getChipIndex(int vectorID);
   void getChipName(TString& FolderName, TString& HistogramName, int iHitMapID);
   void getPixelName(TString& FolderName, TString& HistogramName, int iChipID);
+  void getChipMapData();
 };
 
 } // namespace o2::quality_control_modules::mft

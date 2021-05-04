@@ -22,10 +22,11 @@
 // O2
 #include <DataFormatsITSMFT/Digit.h>
 #include <Framework/InputRecord.h>
+#include <ITSMFTReconstruction/ChipMappingMFT.h> 
 // Quality Control
 #include "QualityControl/QcInfoLogger.h"
 #include "MFT/BasicDigitQcTask.h"
-#include "MFT/BasicDigitQcTaskConversionTable.h" // Temporary header file with mapping table
+#include "MFT/BasicDigitQcTaskConversionTable.h"
 // C++
 #include <fstream>
 
@@ -52,6 +53,8 @@ void BasicDigitQcTask::initialize(o2::framework::InitContext& /*ctx*/)
     ILOG(Info, Support) << "Custom parameter - TaskLevel: " << param->second << ENDM;
     TaskLevel = stoi(param->second);
   }
+  
+  getChipMapData();
 
   // Defining histograms
   //==============================================
@@ -205,6 +208,36 @@ void BasicDigitQcTask::getPixelName(TString& FolderName, TString& HistogramName,
 
   HistogramName = Form("h%d-d%d-f%d-z%d-l%d-s%d-tr%d",
                        half[iChipID], disk[iChipID], face[iChipID], zone[iChipID], ladder[iChipID], sensor[iChipID], transID[iChipID]);
+}
+
+void BasicDigitQcTask::getChipMapData()
+{
+
+  const o2::itsmft::ChipMappingMFT map;
+  auto chipMapData = map.getChipMappingData();
+
+  //  reset arrays
+  for (int i = 0; i < nChip; i++) {
+    half[i] = 0;
+    disk[i] = 0;
+    face[i] = 0;
+    zone[i] = 0;
+    sensor[i] = 0;
+    transID[i] = 0;
+    layer[i] = 0;
+  }
+
+  for(int i = 0; i < nChip; i++)  {
+    half[i] = chipMapData[i].half; 
+    disk[i] = chipMapData[i].disk; 
+    layer[i] = chipMapData[i].layer; 
+    face[i] = layer[i]%2; 
+    zone[i] = chipMapData[i].zone; 
+    //ladder[i] = chipMapData[i].ladder; // not in Bogdan's mapping, I will leave it in our table header file
+    sensor[i] = chipMapData[i].localChipSWID; 
+    transID[i] = chipMapData[i].cable; 
+  }
+  
 }
 
 int BasicDigitQcTask::getVectorHitMapIndex(int HitMapID)
