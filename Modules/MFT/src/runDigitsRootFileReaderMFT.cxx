@@ -12,6 +12,7 @@
 /// \file    runDigitsRootFileReaderMFT.cxx
 /// \author  Guillermo Contreras
 /// \author  Tomas Herman
+/// \author  Katarina Krizkova Gajdosova
 ///
 /// \brief This is an executable that reads digits from a root file from disk and sends the data to QC via DPL.
 ///
@@ -86,15 +87,12 @@ class DigitsRootFileReaderMFT : public o2::framework::Task
       return;
     }
 
+    mTree->GetEntry(currentTF); // get TF
+    nROFs = rofs.size(); // get number of ROFs in this TF
+
     // check if we need to read a new TF
-    if (currentROF == nROFs) {
-      mTree->GetEntry(currentTF); // get new TF
+    if (currentROF == nROFs-1)
       currentTF++;
-      nROFs = rofs.size(); // get number of ROFs in this TF
-      currentROF = 0;
-      LOG(INFO) << " oooooooooooo Reading TF " << currentTF << " from " << nTFs
-                << " with " << nROFs << " ROFs";
-    }
 
     // prepare the rof output
     std::vector<o2::itsmft::ROFRecord>* oneROFvec = new std::vector<o2::itsmft::ROFRecord>();
@@ -113,13 +111,11 @@ class DigitsRootFileReaderMFT : public o2::framework::Task
     std::copy(digits.begin() + index, digits.begin() + lastIndex, std::back_inserter(*DigitsInROF));
 
     // fill in the message
-    // LOG(INFO) << " DigitsRootFileReaderMFT::run. In this ROF there are  " << DigitsInROF.size() << " digits";
     pc.outputs().snapshot(Output{ "MFT", "DIGITS", 0, Lifetime::Timeframe }, *DigitsInROF);
     pc.outputs().snapshot(Output{ "MFT", "MFTDigitROF", 0, Lifetime::Timeframe }, *oneROFvec);
 
     // update the ROF counter
     currentROF++;
-    // usleep(100);
   }
 
  private:
